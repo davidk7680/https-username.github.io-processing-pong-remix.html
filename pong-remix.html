@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>Pong</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script>
+    <script>
+        var ballX;
+        var ballY;
+        var ballSpeedX = 5;
+        var ballSpeedY = 5;
+        var paddleHeight = 30;
+        var score1 = 0;
+        var length = 200;
+        var lives = 5;
+        var rectX;
+        var rectY;
+
+        function setup() {
+            createCanvas(800, 600);
+            noCursor();
+            ballX = random(0, width); //Randomly assigns the X coordinate of the ball a value 
+            ballY = random(0, height / 2); //Randomly assigns the Y coordinate of the ball a value
+            rectX = mouseX;
+            rectY = mouseY;
+
+        }
+
+        function draw() {
+            background(128); //sets background to 128
+            moveBall();
+            checkCollide();
+            drawPaddle();
+            drawBall();
+            score();
+            live();
+            gameOver();
+        }
+
+        function moveBall() {
+            ballX = ballX + ballSpeedX; //Changes the X coordinate of the ball by ballSpeedX
+            ballY = ballY + ballSpeedY; //Changes the Y coordinate of the ball by ballSpeedY
+        }
+
+        function checkCollide() {
+            if (ballX < 0 || ballX > width) { //Checks if the ball is on the left or right side of the canvas
+                ballSpeedX = ballSpeedX * -1; //Bounces the ball
+            }
+            if (ballY < 0) { //Checks if the ball is on the top of the canvas
+                ballSpeedY = ballSpeedY * -1; //Bounces ball
+            }
+            if (ballY > rectY) { //Checks if the ball if past the paddle
+                if (ballX > mouseX && ballX < mouseX + length) { //Checks if the ball is touching the paddle
+                    ballSpeedY = ballSpeedY * -1.1; //Bounce the ball
+                    score1 += 1; //Add 1 to score
+                    if (length > 150) { //Checks if the length of the paddle is greater than 150
+                        length -= 5; //Subtract 5 from the paddle length
+                    }
+
+
+                }
+                else {
+                    ballSpeedY = ballSpeedY * -1; //Bounce the ball
+                    lives -= 1; //Decrease the lives by 1
+                }
+            }
+        }
+
+        function drawBall() {
+            noStroke();
+            ellipse(ballX, ballY, 20, 20); //Draw ball
+        }
+
+        function drawPaddle() {
+            strokeWeight(4);
+            rect(rectX, rectY - 4, length, paddleHeight); //Draw rectangle
+            rectX = constrain(mouseX, 0, width - length); //stops the paddle from leaving the screen
+            rectY = constrain(mouseY, height - paddleHeight, height - paddleHeight); //Stops the paddle from moving up and down
+        }
+
+        function score() {
+            textSize(150);
+            text(score1, width - 200, 150); //Shows score
+        }
+
+        function live() {
+            textSize(150);
+            text(lives, width - 400, 150); //Shows lives
+        }
+
+        function gameOver() {
+            if (lives < 1) { //Checks if lives are less than 1
+                textSize(20)
+                text("GAME OVER!", width / 2, height / 2); //Shows game over
+                score1 = 0; //score returns to 0
+                noLoop(); //ends code
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
