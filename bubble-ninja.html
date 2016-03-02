@@ -1,0 +1,191 @@
+<!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">-->
+<html data-cloud9-id='1'>
+
+<head data-cloud9-id='2'>
+    <title data-cloud9-id='5'>Processing Template</title>
+    <script data-cloud9-id='6' src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/addons/p5.dom.js"></script>
+    <script data-cloud9-id='7' src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script>
+    <script data-cloud9-id='8'>
+        var lives;
+        var score;
+        var fruits = [];
+        var enemies = [];
+        var enemyX;
+        var enemyY;
+        var swordWidth = 20;
+        var swordHieght = 40;
+        var fruitX;
+        var fruitY;
+        var timer;
+        //var swordArea = ((mouseX - 10 + swordHieght) + (mouseX -10 + swordWidthh) + (mouseY * swordWidth)) + ((mouseX - 10, mouseY - 40, mouseX + 10, mouseY - 40, mouseX, mouseY - 80)/2);
+
+        function setup() {
+            createCanvas(400, 400);
+            score = 0;
+            lives = 5;
+            timer = 6000;
+        }
+
+        function draw() {
+            background(123, 175, 212);
+            livesBoard();
+            scoreBoard();
+            timeBoard()
+            drawSword();
+            collision();
+            Fruit();
+            Enemy();
+            gameOver();
+
+        }
+
+        function drawSword() {
+            noStroke();
+            fill(165, 42, 42);
+            ellipse(mouseX, mouseY + 28, 20, 20);
+            fill(150);
+            rect(mouseX - 10, mouseY - 40, swordWidth, swordHieght) //Middle part of the sword
+            triangle(mouseX - 10, mouseY - 40, mouseX + 10, mouseY - 40, mouseX, mouseY - (swordHieght * 2));
+            fill(0);
+            rect(mouseX - 20, mouseY, 40, 10);
+            rect(mouseX - 10, mouseY + 10, 20, 10);
+        }
+
+        function collision() {
+            
+            if (fruitX > mouseX - 10 && fruitX < mouseX + 10 && fruitY > mouseY - swordHieght + 20 && fruitY < mouseY) {
+                fruits.splice(0, 1);
+                score += 1;
+                background(123, 175, 212);
+                drawSword();
+                livesBoard();
+                scoreBoard();
+                timeBoard()
+            }
+            if (enemyX > mouseX - 10 && enemyX < mouseX + 10 && enemyY > mouseY - swordHieght && enemyY < mouseY) {
+                enemies.splice(0, 1);
+                lives -= 1;
+                background(123, 175, 212);
+                drawSword();
+                livesBoard();
+                scoreBoard();
+                timeBoard()
+            }
+        }
+
+        function gameOver() {
+            if (lives < 0) {
+                fill(255, 0, 0); //sets the color to red
+                textSize(60); //makes the text larger
+                textAlign(CENTER); //centers the text
+                text("Game Over", width / 2, height / 2);
+                text("Score", width / 2, height / 1.5);
+                text(score, width / 2, height / 1.25);
+                noLoop();
+            }
+        }
+
+        // every time the mouse is pressed,
+        // add a new fruit or enemey to the end of the array
+        function mousePressed() {
+            var pick = floor(random(0, 1));
+            if (pick == 0) {
+                for (var i = 0; i < 1; i++) {
+                    fruits.push(new Fruit());
+                }
+            }
+            if (score > 5) {
+                enemies.push(new Enemy());
+            }
+        }
+
+        function Fruit() {
+
+            this.x = width;
+            this.y = random(height);
+
+            this.move = function() {
+                this.x -= random(1, 4);
+                fruitX = this.x;
+                fruitY = this.y;
+            }
+
+            this.display = function() {
+                fill(255, 0, 0)
+                noStroke();
+                ellipseMode(CENTER)
+                ellipse(fruitX, fruitY, 20, 20);
+
+            }
+            for (var i = 0; i < fruits.length; i++) {
+                fruits[i].move();
+                fruits[i].display();
+            }
+        }
+
+        function Enemy() {
+            this.x = width;
+            this.y = random(height);
+
+            this.move = function() {
+                this.x -= random(1, 4);
+                enemyX = this.x;
+                enemyY = this.y;
+            }
+
+            this.display = function() {
+                fill(0);
+                noStroke();
+                ellipseMode(CENTER)
+                ellipse(enemyX, enemyY, 20, 20);
+            }
+
+            for (var i = 0; i < enemies.length; i++) {
+                enemies[i].move();
+                enemies[i].display();
+            }
+        }
+
+        function scoreBoard() { //creates a function called scoreBoard
+            fill(255) //sets the color to white
+            textSize(30) //makes the text larger
+            textAlign(CENTER) //centers the text
+            text(score, width / 4.25, 100)
+            text("Score:", width / 4.25, 50)
+        }
+
+        function livesBoard() {
+            fill(255); //sets the color to white
+            textSize(30); //makes the text larger
+            textAlign(CENTER); //centers the text
+            text(lives, width / 1.25, 100);
+            text("Lives:", width / 1.25, 50);
+            
+        }
+
+        function timeBoard() {
+            fill(255); //sets the color to white
+            textSize(30); //makes the text larger
+            textAlign(CENTER); //centers the text
+            text(floor(timer / 100), width / 2, 100);
+            text("Time:", width / 2, 50);
+            timer--;
+            if (timer < 0) {
+                fill(255, 0, 0); //sets the color to red
+                textSize(60); //makes the text larger
+                textAlign(CENTER); //centers the text
+                text("Game Over", width / 2, height / 2);
+                text("Score", width / 2, height / 1.5);
+                text(score, width / 2, height / 1.25);
+                noLoop();
+            }
+        }
+    </script>
+</head>
+
+<body data-cloud9-id='3'>
+<form><input TYPE="button" onClick="history.go(0)" value="Reset"></form>
+</body>
+
+</html>
+<script src="/_static/preview/livecss.js"></script>
